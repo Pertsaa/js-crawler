@@ -36,7 +36,7 @@ describe("getURLsFromHTML", () => {
         <a href="https://buggyduck.dev">Home</a>
         <a href="https://buggyduck.dev/about">about</a>
     `;
-    const urls = getURLsFromHTML(html, "buggyduck.dev");
+    const urls = getURLsFromHTML(html, "https://buggyduck.dev");
     expect(urls.length).toBe(2);
     expect(urls[0]).toBe("https://buggyduck.dev/");
     expect(urls[1]).toBe("https://buggyduck.dev/about");
@@ -48,7 +48,7 @@ describe("getURLsFromHTML", () => {
         <a href="/">Home</a>
         <a href="/about">about</a>
     `;
-    const urls = getURLsFromHTML(html, "buggyduck.dev");
+    const urls = getURLsFromHTML(html, "https://buggyduck.dev");
     expect(urls.length).toBe(2);
     expect(urls[0]).toBe("https://buggyduck.dev/");
     expect(urls[1]).toBe("https://buggyduck.dev/about");
@@ -82,7 +82,7 @@ describe("getURLsFromHTML", () => {
       "https://buggyduck.dev/",
       "https://buggyduck.dev/about",
     ];
-    const urls = getURLsFromHTML(html, "buggyduck.dev");
+    const urls = getURLsFromHTML(html, "https://buggyduck.dev");
     expect(urls.length).toBe(4);
     for (let i = 0; i < output.length; i++) {
       expect(output[i]).toBe(urls[i]);
