@@ -14,7 +14,6 @@ function getURLsFromHTML(htmlBody, baseURL) {
   const anchors = dom.window.document.querySelectorAll("a");
   const hrefs = [];
   for (const a of anchors) {
-    console.log(a.href, a.href[0] === "/");
     if (a.href[0] === "/") {
       hrefs.push(`${baseURL}${a.href}`);
     } else {
