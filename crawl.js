@@ -1,3 +1,5 @@
+const { JSDOM } = require("jsdom");
+
 function normalizeURL(url) {
   const urlObj = new URL(url);
   if (urlObj.pathname.at(-1) === "/") {
@@ -7,6 +9,9 @@ function normalizeURL(url) {
   return normalized;
 }
 
+function getURLsFromHTML(htmlBody, baseURL) {}
+
 module.exports = {
   normalizeURL,
+  getURLsFromHTML,
 };

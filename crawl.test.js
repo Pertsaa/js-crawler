@@ -1,5 +1,5 @@
 const { describe, test, expect } = require("@jest/globals");
-const { normalizeURL } = require("./crawl");
+const { normalizeURL, getURLsFromHTML } = require("./crawl");
 
 describe("normalizeURL", () => {
   test("https ok", () => {
@@ -26,5 +26,66 @@ describe("normalizeURL", () => {
 
   test("invalid url throws error", () => {
     expect(() => normalizeURL("")).toThrow();
+  });
+});
+
+describe("getURLsFromHTML", () => {
+  test("absolute urls ok", () => {
+    const html = `
+        <!DOCTYPE html>
+        <a href="https://buggyduck.dev">Home</a>
+        <a href="https://buggyduck.dev/about">about</a>
+    `;
+    const urls = getURLsFromHTML(html, "buggyduck.dev");
+    expect(urls.length).toBe(2);
+    expect(urls[0]).toBe("https://buggyduck.dev/");
+    expect(urls[1]).toBe("https://buggyduck.dev/about");
+  });
+
+  test("relative urls ok", () => {
+    const html = `
+        <!DOCTYPE html>
+        <a href="/">Home</a>
+        <a href="/about">about</a>
+    `;
+    const urls = getURLsFromHTML(html, "buggyduck.dev");
+    expect(urls.length).toBe(2);
+    expect(urls[0]).toBe("https://buggyduck.dev/");
+    expect(urls[1]).toBe("https://buggyduck.dev/about");
+  });
+
+  test("returns all urls", () => {
+    const html = `
+        <!DOCTYPE html>
+        <body>
+            <main>
+            <nav>
+                <!-- ABSOLUTE URLS -->
+                <ul>
+                    <li><a href="https://buggyduck.dev">Home</a></li>
+                    <li><a href="https://buggyduck.dev/about">About</a></li>
+                </ul>
+                <!-- RELATIVE URLS -->
+                <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                </ul>
+            </nav>
+            </main>
+        </body>
+        </html>
+    `;
+
+    const output = [
+      "https://buggyduck.dev/",
+      "https://buggyduck.dev/about",
+      "https://buggyduck.dev/",
+      "https://buggyduck.dev/about",
+    ];
+    const urls = getURLsFromHTML(html, "buggyduck.dev");
+    expect(urls.length).toBe(4);
+    for (let i = 0; i < output.length; i++) {
+      expect(output[i]).toBe(urls[i]);
+    }
   });
 });
