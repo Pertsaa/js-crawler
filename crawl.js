@@ -25,7 +25,7 @@ async function crawlPage(baseURL, currentURL, pages) {
     const htmlBody = await res.text();
     const urls = getURLsFromHTML(htmlBody, baseURL);
     for (const url of urls) {
-      crawlPage(baseURL, url, pages);
+      await crawlPage(baseURL, url, pages);
     }
     return pages;
   } catch (error) {
