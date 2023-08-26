@@ -1,6 +1,6 @@
 const { crawlPage } = require("./crawl");
 
-function main() {
+async function main() {
   if (process.argv.length < 3) {
     console.error("Error: missing arg BASE_URL");
     console.error("Usage: npm run start <BASE_URL>");
@@ -11,8 +11,8 @@ function main() {
     process.exit(1);
   }
   const baseURL = process.argv[2];
-  console.log(`Crawling: ${baseURL}`);
-  crawlPage(baseURL);
+  const pages = await crawlPage(baseURL, baseURL, {});
+  console.log(pages);
 }
 
 main();

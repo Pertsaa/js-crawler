@@ -1,19 +1,36 @@
 const { JSDOM } = require("jsdom");
 
-async function crawlPage(baseURL) {
+async function crawlPage(baseURL, currentURL, pages) {
+  if (new URL(baseURL).hostname !== new URL(currentURL).hostname) {
+    return pages;
+  }
+  const normalizedURL = normalizeURL(currentURL);
+  if (pages[normalizedURL]) {
+    pages[normalizedURL]++;
+    return pages;
+  } else if (normalizedURL !== baseURL) {
+    pages[normalizedURL] = 1;
+  } else {
+    pages[normalizedURL] = 0;
+  }
   try {
-    const res = await fetch(baseURL);
+    console.log(`Crawling: ${currentURL}`);
+    const res = await fetch(currentURL);
     if (!res.headers.get("content-type").includes("text/html")) {
       console.error(
         `Error: invalid Content-Type "${res.headers["content-type"]}"`
       );
-      process.exit(1);
+      return pages;
     }
     const htmlBody = await res.text();
-    console.log(htmlBody);
+    const urls = getURLsFromHTML(htmlBody, baseURL);
+    for (const url of urls) {
+      crawlPage(baseURL, url, pages);
+    }
+    return pages;
   } catch (error) {
     console.error(`Error: ${error}`);
-    process.exit(1);
+    return pages;
   }
 }
 
